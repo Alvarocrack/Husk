@@ -1,0 +1,42 @@
+# Fork de Alvarocrack: trae los cambios de Leviidev/Husk sin perder los del fork, y compila el IPA nuevo.
+# Hace un merge (no un rebase), así que tus commits se quedan como están. Si hay conflicto, no toca nada y abre un issue.
+# El botón "Sync fork" de GitHub hace lo mismo a mano.
+name: Sincronizar con Leviidev/Husk
+
+on:
+  schedule:
+    - cron: '23 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+  issues: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Merge de upstream
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "Alvarocrack"
+          git config user.email "214276584+Alvarocrack@users.noreply.github.com"
+          git remote add upstream https://github.com/Leviidev/Husk.git
+          git fetch upstream main
+          if git merge-base --is-ancestor upstream/main HEAD; then
+            echo "Ya al día con Leviidev/Husk"; exit 0
+          fi
+          if git merge --no-edit -m "Sincronizar con Leviidev/Husk ($(git rev-parse --short upstream/main))" upstream/main; then
+            git push origin HEAD:main
+            gh workflow run build-ipa.yml --ref main
+          else
+            git merge --abort
+            gh issue create --title "Conflicto al sincronizar con Leviidev/Husk ($(git rev-parse --short upstream/main))" \
+              --body "El merge automático choca con cambios del fork. Resuélvelo con 'Sync fork' en GitHub o pídeselo a Claude." || true
+            exit 1
+          fi

@@ -31,11 +31,11 @@ struct SettingsTab: View {
                 Section("General") {
                     row(DiscoverView(), "sparkle.magnifyingglass", .mint, "Discover", "Find apps in F-Droid and other repositories")
                     row(LibrarySettings(), "square.grid.2x2.fill", .blue, "Library", "Your apps and their icons")
-                    row(PerformanceSettings(), "speedometer", .orange, "Performance", "Renderer, sound")
+                    row(PerformanceSettings(), "speedometer", .orange, "Performance", "120 Hz, renderer, sound")
                     row(AppearanceSettings(), "paintbrush.fill", .pink, "Appearance", "Light or dark, accent colour, app icon")
                     row(FontSettings(), "textformat", .indigo, "Fonts", "Chinese, Japanese and Korean text")
                     row(FAQTab(), "questionmark.circle.fill", .teal, "Help", "Answers to common problems")
-                    row(AboutSettings(), "info.circle.fill", .gray, "About Husk", "Version \(Bundle.main.version) · \(Bundle.main.commit)")
+                    row(AboutSettings(), "info.circle.fill", .gray, "About Husk", "Version \(Bundle.main.version) · \(Bundle.main.commit) · Fork de Alvarocrack")
                 }
 
                 Section {
@@ -324,6 +324,8 @@ struct PerformanceSettings: View {
             } footer: {
                 Text("What this install was signed with. If one is Off, big games can close early: sign Husk with a method that keeps these entitlements.")
             }
+            FrameRateSection()   // fork de Alvarocrack
+
             Section {
                 Picker("Renderer", selection: $gpuMode) {
                     Text("GPU").tag(true)
@@ -1062,6 +1064,8 @@ struct AboutSettings: View {
                     Text("Husk").font(.title2.weight(.semibold))
                     Text("Version \(Bundle.main.version)")
                         .font(.subheadline).foregroundStyle(.secondary)
+                    Text("Fork hecho por Alvarocrack")
+                        .font(.footnote.weight(.medium)).foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 10)

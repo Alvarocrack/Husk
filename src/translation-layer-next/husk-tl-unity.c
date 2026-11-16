@@ -19,6 +19,7 @@
 #include "husk-tl-jni.h"
 #include "husk-tl-arm32.h"
 #include "husk-tl-ld.h"
+#include "husk-tl-refresh.h"
 
 void tl_jni_hle_install(void);
 void tl_hle_configure(const char *pkg, const char *apk, const char *data, int w, int h);
@@ -207,6 +208,7 @@ bool tl_unity_start(const tl_unity_config *cfg)
     tl_jni_hle_install();
     keyboard_install();
     tl_ld_on_init(il2cpp_on_lib_init);
+    tl_fps_unity_install();     /* fork Alvarocrack: desbloqueo de FPS (solo a más de 60 Hz) */
 
     /* new UnityPlayer(activity): the Java side's own constructor calls loadNative(dir),
      * which is System.load(dir + "/libmain.so") followed by NativeLoader.load(dir). */
@@ -307,9 +309,10 @@ static void *unity_main(void *arg)
             unsigned long long m = atomic_load(&U.perf_max_ns);
             while (ns > m && !atomic_compare_exchange_weak(&U.perf_max_ns, &m, ns)) {}
         }
-        atomic_fetch_add(&U.frames, 1);
+        tl_fps_unity_frame(atomic_fetch_add(&U.frames, 1) + 1);
         if (!keep) { tl_log_line("unity: nativeRender returned false: the engine asked to quit"); break; }
-        usleep(2000);
+        /* fork Alvarocrack: a 120 Hz un frame dura 8,3 ms y dormir 2 ms se comía un cuarto; el ritmo lo marca el swap de EGL */
+        usleep(tl_refresh_hz() > 60 ? 300 : 2000);
     }
     g_unity_jmp_armed = 0;
     return NULL;

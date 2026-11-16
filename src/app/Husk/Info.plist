@@ -209,5 +209,14 @@
 			</dict>
 		</dict>
 	</array>
+	<!-- Fork de Alvarocrack: ProMotion (120 Hz) y Modo Juego -->
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>GCSupportsGameMode</key>
+	<true/>
+	<key>LSSupportsGameMode</key>
+	<true/>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.games</string>
 </dict>
 </plist>

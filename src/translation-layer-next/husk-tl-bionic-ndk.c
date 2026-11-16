@@ -147,7 +147,8 @@ static int b_ALooper_pollAll(int timeout_ms, int *out_fd, int *out_events, void 
  * times its frames with it (API 29+). One clock thread ticks at 60 Hz and pokes every choreographer that has callbacks waiting; the
  * owner thread's looper runs them with that tick's time, as Android's does.
  */
-#define VSYNC_NS 16666667ll
+#include "husk-tl-refresh.h"
+#define VSYNC_NS ((long long)tl_refresh_period_ns())   /* fork Alvarocrack: 60 o 120 Hz (era 16666667) */
 typedef struct chcb { int kind; void *fn, *data; int64_t not_before; struct chcb *next; } chcb;    /* kind 0: frame, 1: frame64, 2: vsync */
 typedef struct tl_choreo { tl_looper *looper; int pipe[2]; pthread_mutex_t mu; chcb *pending; void *rate_fn, *rate_data; struct tl_choreo *next; } tl_choreo;
 static __thread tl_choreo *t_choreo;
@@ -620,7 +621,7 @@ static float b_AThermal_getThermalHeadroom(void *m, int forecastSeconds) { (void
 static int b_AThermal_getThermalHeadroomThresholds(void *m, const void **out, size_t *n) { (void)m; if (out) *out = NULL; if (n) *n = 0; return 0; }
 static void *b_APerformanceHint_getManager(void) { return &g_hint_mgr; }
 static void *b_APerformanceHint_createSession(void *m, const int32_t *tids, size_t n, int64_t target) { (void)m; (void)tids; (void)n; (void)target; return calloc(1, 16); }
-static int64_t b_APerformanceHint_getPreferredUpdateRateNanos(void *m) { (void)m; return 16666666; }
+static int64_t b_APerformanceHint_getPreferredUpdateRateNanos(void *m) { (void)m; return tl_refresh_period_ns(); }
 static int b_APerformanceHint_ok(void *s, int64_t v) { (void)s; (void)v; return 0; }
 static void b_APerformanceHint_closeSession(void *s) { free(s); }
 static int b_APerformanceHint_setThreads(void *s, const int32_t *tids, size_t n) { (void)s; (void)tids; (void)n; return 0; }

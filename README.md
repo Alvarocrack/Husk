@@ -6,6 +6,8 @@
 
 <p align="center">Android apps and games on your iPhone.</p>
 
+<p align="center"><b>Fork hecho por Alvarocrack</b> · 120 Hz / ProMotion, Modo Juego y desbloqueo de FPS en Unity · <a href="FORK.md">qué cambia</a> · <a href="https://github.com/Alvarocrack/Husk/releases/latest">descargar IPA</a></p>
+
 <p align="center">
   <a href="https://itslevii.dev/docs/install">Install</a>
   ·

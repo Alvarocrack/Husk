@@ -59,6 +59,8 @@ final class TLUnityUIView: UIView, UIKeyInput {
     /// "58 fps · 11.2 ms" in the corner, as the other screen has: frames the game finished per second, and the
     /// mean time one frame takes it. Refreshed once a second from the runtime's own counters.
     private let stats = UILabel()
+    /// Fork de Alvarocrack: mantiene ProMotion a la tasa elegida mientras el juego está en pantalla.
+    private let rateHint = FrameRateHint()
     private var statsTimer: Timer?
 
     /// Called when three fingers tap at once: the way back to the interface while it is hidden.
@@ -241,9 +243,11 @@ final class TLUnityUIView: UIView, UIKeyInput {
         statsTimer = nil
         if window != nil {
             husk_unity_set_paused(false)
+            rateHint.start(hz: HuskFrameRate.effectiveHz)
             statsTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in self?.updateStats() }
         } else {
             husk_unity_set_paused(true)
+            rateHint.stop()
             if isFirstResponder { resignFirstResponder() }
         }
         setNeedsLayout()
@@ -278,6 +282,7 @@ final class TLUnityUIView: UIView, UIKeyInput {
         // Splits and the asset pack are part of the app, whatever its engine; the game's libraries and data may be in any of
         // them (a Google Play install keeps a Unity game's libraries in one split and its data in an asset pack).
         JITLess.prepareLaunch()
+        HuskFrameRate.apply()   // fork de Alvarocrack: 60 o 120 Hz, antes de que el juego pregunte por la pantalla
         for extra in extraApks.prefix(15) { husk_native_add_package(extra) }
         // Android's shared storage, one folder for every game: a game that keeps its data in a folder of its own on /sdcard finds it
         // in Husk's "Shared Storage", which can be filled from Files or Finder.

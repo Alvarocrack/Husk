@@ -30,7 +30,8 @@
 void tl_log_line(const char *fmt, ...);
 
 #define NS 1000000000ll
-#define VSYNC_NS (NS / 60)
+#include "husk-tl-refresh.h"
+#define VSYNC_NS (NS / tl_refresh_hz())   /* fork Alvarocrack: 60 o 120 Hz */
 
 static jvalue vl(void *p) { jvalue v; v.j = 0; v.l = p; return v; }
 static jvalue vi(int i) { jvalue v; v.j = 0; v.i = i; return v; }
@@ -595,7 +596,7 @@ static void post_frame(jobj *self, jobj *cb, int64_t delay_ns)
     if (!l || !cb) return;
     int64_t t = now_ns() + delay_ns;
     ev *e = calloc(1, sizeof(*e));
-    e->when = (t / VSYNC_NS + 1) * VSYNC_NS;       /* the next 60 Hz boundary after t */
+    e->when = (t / VSYNC_NS + 1) * VSYNC_NS;       /* the next vsync boundary after t */
     e->frame = tl_jni_ref(cb);
     enqueue(l, e);
 }

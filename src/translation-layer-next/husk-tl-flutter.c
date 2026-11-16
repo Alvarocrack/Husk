@@ -24,6 +24,7 @@
 #include "husk-tl-codewrite.h"
 #include "husk-tl-dexindex.h"
 #include "husk-tl-egl.h"
+#include "husk-tl-refresh.h"
 #include "husk-tl-flutter-codec.h"
 #include "husk-tl-flutter-plugins.h"
 #include "husk-tl-flutter-text.h"
@@ -286,7 +287,7 @@ static void J_resolvedLocale(tl_jcall *c)
 static void vsync_cb(int64_t frame_ns, void *data)
 {
     int64_t cookie = (int64_t)(intptr_t)data;
-    jvalue a[3] = { { .j = frame_ns }, { .j = frame_ns + 16666667 }, { .j = cookie } };
+    jvalue a[3] = { { .j = frame_ns }, { .j = frame_ns + tl_refresh_period_ns() }, { .j = cookie } };
     fj_call("nativeOnVsync", a, 3);
 }
 static void J_asyncWaitForVsync(tl_jcall *c)
@@ -607,7 +608,7 @@ static void *platform_main(void *arg)
         add_fd(looper, g_post[0], -2 /* ALOOPER_POLL_CALLBACK */, 1 /* input */, (void *)on_post, NULL);
     }
     /* FlutterJNI's display statics, which the engine reads for the refresh rate and the screen it draws for */
-    tl_jni_set_static(FJNI, "refreshRateFPS", "F", vf(60.0f));
+    tl_jni_set_static(FJNI, "refreshRateFPS", "F", vf((float)tl_refresh_hz()));
     tl_jni_set_static(FJNI, "displayWidth", "F", vf((float)F.cfg.width));
     tl_jni_set_static(FJNI, "displayHeight", "F", vf((float)F.cfg.height));
     tl_jni_set_static(FJNI, "displayDensity", "F", vf(F.ratio));

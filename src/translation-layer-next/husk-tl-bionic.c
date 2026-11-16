@@ -731,6 +731,7 @@ static void *bionic_dlsym(void *handle, const char *name)
 {
     if (!name) return NULL;
     void *r = NULL;
+    { void *tl_fps_dlsym(const char *); if ((r = tl_fps_dlsym(name))) return r; }   /* fork Alvarocrack: desbloqueo de FPS de Unity */
     if (handle == (void *)-1L) {
         /* RTLD_NEXT: the definition after the caller's own, which for a library wrapping libc (ART's signal chain) is libc's */
         r = tl_bionic_find(name);

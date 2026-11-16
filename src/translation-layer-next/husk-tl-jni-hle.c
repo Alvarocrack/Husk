@@ -23,6 +23,7 @@
 #include "husk-tl-arm32.h"
 #include "husk-tl-ld.h"
 #include "husk-tl-dexindex.h"
+#include "husk-tl-refresh.h"
 
 /* ------------------------------------------------------------------ state */
 
@@ -248,7 +249,7 @@ static void fill_metrics(jobj *m)
 }
 static void Display_getMetrics(tl_jcall *c) { fill_metrics(c->args[0].l); }
 static void Display_getRotation(tl_jcall *c) { c->ret = vi(0); }
-static void Display_getRefreshRate(tl_jcall *c) { c->ret = vf(60.f); }
+static void Display_getRefreshRate(tl_jcall *c) { c->ret = vf((float)tl_refresh_hz()); }
 static void Display_getDisplayId(tl_jcall *c) { c->ret = vi(0); }
 static void Display_getWidth(tl_jcall *c) { c->ret = vi(H.width); }
 static void Display_getHeight(tl_jcall *c) { c->ret = vi(H.height); }
@@ -269,7 +270,7 @@ static void Display_getSupportedModes(tl_jcall *c)
 static void WindowManager_getDefaultDisplay(tl_jcall *c) { c->ret = vl(H.display); }
 static void Mode_getPhysicalWidth(tl_jcall *c) { c->ret = vi(H.width); }
 static void Mode_getPhysicalHeight(tl_jcall *c) { c->ret = vi(H.height); }
-static void Mode_getRefreshRate(tl_jcall *c) { c->ret = vf(60.f); }
+static void Mode_getRefreshRate(tl_jcall *c) { c->ret = vf((float)tl_refresh_hz()); }
 static void Display_isWideColorGamut(tl_jcall *c) { c->ret = vz(0); }
 static void Display_isHdr(tl_jcall *c) { c->ret = vz(0); }
 /* When vsync reaches the app and the compositor, as a 60 Hz phone has it: a 1 ms app offset, a deadline 5 ms short of the period.
@@ -277,7 +278,7 @@ static void Display_isHdr(tl_jcall *c) { c->ret = vz(0); }
  * clock by it: these give it 5 ms. With both at zero, as unimplemented methods left them, it was 17.7 ms, longer than a frame; its
  * estimate of the period grew without end, and a game sank from 60 to under 10 frames a second within a minute. */
 static void Display_getAppVsyncOffsetNanos(tl_jcall *c) { c->ret.j = 1000000; }
-static void Display_getPresentationDeadlineNanos(tl_jcall *c) { c->ret.j = 1000000000ll / 60 - 5000000; }
+static void Display_getPresentationDeadlineNanos(tl_jcall *c) { c->ret.j = tl_refresh_period_ns() - 5000000; }
 static void Window_setFlags(tl_jcall *c) { (void)c; }
 static void Window_getDecorView(tl_jcall *c) { c->ret = vl(H.activity); }
 static void UnityPlayer_getLaunchURL(tl_jcall *c) { c->ret = vl(STR("")); }
