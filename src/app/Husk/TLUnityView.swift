@@ -858,6 +858,7 @@ struct TLCocosAttemptView: View {
         let loaded = TLAppSettings.load(app.id)
         _settings = State(initialValue: loaded)
         _uiHidden = State(initialValue: loaded.cleanView)
+        HuskFrameRate.gameOverride = loaded.frameRate.choice   // fork: this game's own refresh rate
     }
 
     private var engine: TLNativeEngine { app.screenEngine }

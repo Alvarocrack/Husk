@@ -1,0 +1,5 @@
+/* Bundle display name */
+"CFBundleDisplayName" = "Descargas de Husk";
+
+/* Bundle name */
+"CFBundleName" = "HuskDownloadsWidget";

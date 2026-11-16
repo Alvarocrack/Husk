@@ -93,6 +93,8 @@ struct TLAppSettings: Codable, Equatable {
     var haptics = true
     /// Geometry Dash only: load Geode, its mod loader (Geode.swift).
     var geode = false
+    /// Alvarocrack's fork: this game's refresh rate, or the one in Settings › Frame Rate.
+    var frameRate: GameFrameRate = .default
 
     init() {}
 
@@ -110,6 +112,7 @@ struct TLAppSettings: Codable, Equatable {
         haptics = try c.decodeIfPresent(Bool.self, forKey: .haptics) ?? true
         geode = try c.decodeIfPresent(Bool.self, forKey: .geode) ?? false
         window = try c.decodeIfPresent(WindowMode.self, forKey: .window) ?? .auto
+        frameRate = try c.decodeIfPresent(GameFrameRate.self, forKey: .frameRate) ?? .default
     }
 
     private static func url(_ id: String) -> URL {
@@ -185,6 +188,9 @@ struct TLAppSettingsView: View {
                 }
                 Picker("Resolution", selection: $settings.resolution) {
                     ForEach(TLAppSettings.Resolution.allCases) { Text($0.title).tag($0) }
+                }
+                Picker("Frame Rate", selection: $settings.frameRate) {   // fork
+                    ForEach(GameFrameRate.allCases) { Text($0.title).tag($0) }
                 }
                 Toggle("Performance readout", isOn: $settings.showStats)
                 Toggle("Keep the screen on", isOn: $settings.keepAwake)

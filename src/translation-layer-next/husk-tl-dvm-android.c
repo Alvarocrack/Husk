@@ -27,6 +27,7 @@
 #include "husk-tl-egl.h"
 #include "husk-tl-internal.h"
 #include "husk-tl-ld.h"
+#include "husk-tl-refresh.h"
 
 void tl_nwindow_configure(int w, int h, void *layer);
 void *tl_nwindow_get(void);
@@ -1013,7 +1014,7 @@ static void *gl_main(void *arg)
             swapBuffers(dpy, surf);
             atomic_fetch_add(&A.frames, 1);
         }
-        next += 1000000000ll / 60;
+        next += tl_refresh_period_ns();   /* fork Alvarocrack: GLSurfaceView at the chosen rate (was 60 Hz) */
         int64_t late = now_ns() - next;
         if (late > 100000000ll) next = now_ns();
         else if (late < 0) { struct timespec ts = { 0, (long)(-late) }; nanosleep(&ts, NULL); }

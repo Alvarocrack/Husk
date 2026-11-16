@@ -1,0 +1,20 @@
+/* No comment provided by engineer. */
+"Android App" = "App de Android";
+
+/* No comment provided by engineer. */
+"Android App Bundle (APKM)" = "Paquete de app de Android (APKM)";
+
+/* No comment provided by engineer. */
+"Android App Bundle (APKS)" = "Paquete de app de Android (APKS)";
+
+/* No comment provided by engineer. */
+"Android App Bundle (XAPK)" = "Paquete de app de Android (XAPK)";
+
+/* Bundle display name */
+"CFBundleDisplayName" = "Husk";
+
+/* Bundle name */
+"CFBundleName" = "Husk";
+
+/* Privacy - Local Network Usage Description */
+"NSLocalNetworkUsageDescription" = "Husk se empareja con este iPhone a través de la red local para activar el JIT sin ordenador.";

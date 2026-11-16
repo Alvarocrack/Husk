@@ -16,6 +16,7 @@
 #include "husk-tl-jni.h"
 #include "husk-tl-ld.h"
 #include "husk-tl-internal.h"
+#include "husk-tl-refresh.h"
 
 void tl_jni_hle_install(void);
 void tl_hle_configure(const char *pkg, const char *apk, const char *data, int w, int h);
@@ -375,7 +376,7 @@ static void *gl_main(void *arg)
         while (ns > m && !atomic_compare_exchange_weak(&U.perf_max_ns, &m, ns)) {}
         atomic_fetch_add(&U.frames, 1);
         if (atomic_load(&U.ended)) break;
-        next += 1000000000ll / 60;
+        next += tl_refresh_period_ns();   /* fork Alvarocrack: was 60 Hz */
         int64_t late = now_ns() - next;
         if (late > 100000000ll) next = now_ns();
         else if (late < 0) { struct timespec ts = { 0, (long)(-late) }; nanosleep(&ts, NULL); }

@@ -31,11 +31,13 @@ struct SettingsTab: View {
                 Section("General") {
                     row(DiscoverView(), "sparkle.magnifyingglass", .mint, "Discover", "Find apps in F-Droid and other repositories")
                     row(LibrarySettings(), "square.grid.2x2.fill", .blue, "Library", "Your apps and their icons")
-                    row(PerformanceSettings(), "speedometer", .orange, "Performance", "120 Hz, renderer, sound")
+                    row(FrameRateSettings(), "gauge.with.dots.needle.67percent", .red, "Frame Rate", "60 or 120 Hz for games")   // fork
+                    row(PerformanceSettings(), "speedometer", .orange, "Performance", "Renderer, sound")
                     row(AppearanceSettings(), "paintbrush.fill", .pink, "Appearance", "Light or dark, accent colour, app icon")
+                    row(LanguageSettings(), "globe", .blue, "Language", "English or Spanish")   // fork
                     row(FontSettings(), "textformat", .indigo, "Fonts", "Chinese, Japanese and Korean text")
                     row(FAQTab(), "questionmark.circle.fill", .teal, "Help", "Answers to common problems")
-                    row(AboutSettings(), "info.circle.fill", .gray, "About Husk", "Version \(Bundle.main.version) · \(Bundle.main.commit) · Fork de Alvarocrack")
+                    row(AboutSettings(), "info.circle.fill", .gray, "About Husk", "Version \(Bundle.main.version) · \(Bundle.main.commit) · Fork by Alvarocrack")
                 }
 
                 Section {
@@ -136,8 +138,8 @@ struct SettingsTab: View {
         NavigationLink { destination } label: {
             Label {
                 VStack(alignment: .leading, spacing: 1) {
-                    Text(title)
-                    Text(subtitle).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                    Text(LocalizedStringKey(title))   // fork: localised (ja, es)
+                    Text(LocalizedStringKey(subtitle)).font(.caption).foregroundStyle(.secondary).lineLimit(1)
                 }
             } icon: {
                 RoundedRectangle(cornerRadius: 7, style: .continuous)
@@ -324,8 +326,6 @@ struct PerformanceSettings: View {
             } footer: {
                 Text("What this install was signed with. If one is Off, big games can close early: sign Husk with a method that keeps these entitlements.")
             }
-            FrameRateSection()   // fork de Alvarocrack
-
             Section {
                 Picker("Renderer", selection: $gpuMode) {
                     Text("GPU").tag(true)
@@ -1064,7 +1064,7 @@ struct AboutSettings: View {
                     Text("Husk").font(.title2.weight(.semibold))
                     Text("Version \(Bundle.main.version)")
                         .font(.subheadline).foregroundStyle(.secondary)
-                    Text("Fork hecho por Alvarocrack")
+                    Text("Fork by Alvarocrack")
                         .font(.footnote.weight(.medium)).foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: .infinity)
