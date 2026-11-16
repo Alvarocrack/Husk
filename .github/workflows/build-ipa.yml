@@ -23,9 +23,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Elegir Xcode 26
+      - name: Elegir el Xcode más nuevo
         run: |
-          X=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1 || true)
+          ls -d /Applications/Xcode*.app
+          # El IPA oficial se compila con el Xcode más nuevo (27); con el 26 hay código que no compila.
+          X=$(ls -d /Applications/Xcode_*.app 2>/dev/null | sort -V | tail -1 || true)
           [ -n "$X" ] || X=$(ls -d /Applications/Xcode*.app | sort -V | tail -1)
           echo "Xcode: $X"
           sudo xcode-select -s "$X/Contents/Developer"
